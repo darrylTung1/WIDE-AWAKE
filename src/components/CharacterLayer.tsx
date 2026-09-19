@@ -53,6 +53,7 @@ export const CharacterLayer: React.FC<CharacterLayerProps> = ({
           alt={asset.label}
           onError={() => setImageFailed(true)}
           className="h-full w-auto object-contain object-bottom drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)] filter transition-transform duration-300"
+          referrerPolicy="no-referrer"
         />
       ) : (
         <div className="h-full w-full flex items-end justify-center">

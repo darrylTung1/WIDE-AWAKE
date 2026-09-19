@@ -29,98 +29,98 @@ export const PROJECT_ASSETS: ProjectAsset[] = [
   // Backgrounds
   {
     key: 'bg_bedroom',
-    filename: 'bg_bedroom.webp',
+    filename: 'bg_bedroom.png',
     label: 'HDB Bedroom (Taped Windows & Fortified Door)',
     type: 'background',
-    path: ROOT_ASSET_URL('bg_bedroom.webp'),
+    path: ROOT_ASSET_URL('bg_bedroom.png'),
     requiredFor: 'Act 1: Investigation & Bedroom Search',
   },
   {
     key: 'bg_living',
-    filename: 'bg_living.webp',
+    filename: 'bg_living.png',
     label: 'HDB Living Room (Sofa & Table)',
     type: 'background',
-    path: ROOT_ASSET_URL('bg_living.webp'),
+    path: ROOT_ASSET_URL('bg_living.png'),
     requiredFor: 'Act 2: Witness Confrontation & Flashback',
   },
   {
     key: 'bg_hallway',
-    filename: 'bg_hallway.webp',
+    filename: 'bg_hallway.png',
     label: 'HDB Hallway (Vanity Wall Mirror)',
     type: 'background',
-    path: ROOT_ASSET_URL('bg_hallway.webp'),
+    path: ROOT_ASSET_URL('bg_hallway.png'),
     requiredFor: 'Act 3: Mirror Self-Observation',
   },
 
   // Characters - Mum
   {
     key: 'mum_monster',
-    filename: 'mum_monster.webp',
+    filename: 'mum_monster.png',
     label: 'Mum (Weeping Specter / Jade Bracelet)',
     type: 'character',
-    path: ROOT_ASSET_URL('mum_monster.webp'),
+    path: ROOT_ASSET_URL('mum_monster.png'),
     requiredFor: 'Act 2: Suspects Confrontation',
   },
   {
     key: 'mum_human',
-    filename: 'mum_human.webp',
+    filename: 'mum_human.png',
     label: 'Mum (Mrs. Tan / Human Mother with Food)',
     type: 'character',
-    path: ROOT_ASSET_URL('mum_human.webp'),
+    path: ROOT_ASSET_URL('mum_human.png'),
     requiredFor: 'Flashback & Casefile Truth',
   },
 
   // Characters - Ravi
   {
     key: 'ravi_monster',
-    filename: 'ravi_monster.webp',
+    filename: 'ravi_monster.png',
     label: 'Ravi (Approaching Threat / Red Cap)',
     type: 'character',
-    path: ROOT_ASSET_URL('ravi_monster.webp'),
+    path: ROOT_ASSET_URL('ravi_monster.png'),
     requiredFor: 'Act 2: Living Room Reach',
   },
   {
     key: 'ravi_human',
-    filename: 'ravi_human.webp',
+    filename: 'ravi_human.png',
     label: 'Ravi (Close Friend / Red Cap Offering Water)',
     type: 'character',
-    path: ROOT_ASSET_URL('ravi_human.webp'),
+    path: ROOT_ASSET_URL('ravi_human.png'),
     requiredFor: 'Flashback & Casefile Truth',
   },
 
   // Characters - Aisyah
   {
     key: 'aisyah_monster',
-    filename: 'aisyah_monster.webp',
+    filename: 'aisyah_monster.png',
     label: 'Aisyah (Surveillance Figure / Yellow Cardigan)',
     type: 'character',
-    path: ROOT_ASSET_URL('aisyah_monster.webp'),
+    path: ROOT_ASSET_URL('aisyah_monster.png'),
     requiredFor: 'Act 2: Suspects Confrontation',
   },
   {
     key: 'aisyah_human',
-    filename: 'aisyah_human.webp',
+    filename: 'aisyah_human.png',
     label: 'Aisyah (Colleague / Yellow Cardigan with Support Contacts)',
     type: 'character',
-    path: ROOT_ASSET_URL('aisyah_human.webp'),
+    path: ROOT_ASSET_URL('aisyah_human.png'),
     requiredFor: 'Flashback & Casefile Truth',
   },
 
   // Characters - Jun
   {
     key: 'jun_mirror',
-    filename: 'jun_mirror.webp',
+    filename: 'jun_mirror.png',
     label: "Jun in Hallway Mirror (Physiological Symptoms)",
     type: 'character',
-    path: ROOT_ASSET_URL('jun_mirror.webp'),
+    path: ROOT_ASSET_URL('jun_mirror.png'),
     requiredFor: 'Act 3: Mirror Self-Observation',
   },
   {
     key: 'jun_silhouette',
-    filename: 'jun_silhouette.webp',
+    filename: 'jun_silhouette.png',
     label: 'Jun (Pacing Silhouette)',
     type: 'character',
-    path: ROOT_ASSET_URL('jun_silhouette.webp'),
+    path: ROOT_ASSET_URL('jun_silhouette.png'),
     requiredFor: 'Casefile & Witness Timelines',
   },
 ];
@@ -130,7 +130,7 @@ export const PRELOAD_IMAGE_PATHS: string[] = PROJECT_ASSETS.map((a) => a.path);
 
 /**
  * Resolves character image path accurately.
- * Explicitly resolves Jun's mirror portrait rather than generating an invalid 'jun_monster.webp'.
+ * Explicitly resolves Jun's mirror portrait rather than generating an invalid 'jun_monster.png'.
  */
 export function resolveCharacterAsset(
   id: 'mum' | 'ravi' | 'aisyah' | 'jun',
@@ -141,13 +141,13 @@ export function resolveCharacterAsset(
     if (isMirrorScene) {
       return {
         key: 'jun_mirror',
-        path: ROOT_ASSET_URL('jun_mirror.webp'),
+        path: ROOT_ASSET_URL('jun_mirror.png'),
         label: "Jun's Reflection in Mirror",
       };
     }
     return {
       key: 'jun_silhouette',
-      path: ROOT_ASSET_URL('jun_silhouette.webp'),
+      path: ROOT_ASSET_URL('jun_silhouette.png'),
       label: 'Jun Silhouette',
     };
   }
@@ -156,7 +156,7 @@ export function resolveCharacterAsset(
   const asset = PROJECT_ASSETS.find((a) => a.key === key);
   return {
     key,
-    path: asset ? asset.path : ROOT_ASSET_URL(`${key}.webp`),
+    path: asset ? asset.path : ROOT_ASSET_URL(`${key}.png`),
     label: asset ? asset.label : `${id} (${variant})`,
   };
 }
@@ -170,7 +170,7 @@ export function resolveBackgroundAsset(
   const asset = PROJECT_ASSETS.find((a) => a.key === sceneBg);
   return {
     key: sceneBg,
-    path: asset ? asset.path : ROOT_ASSET_URL(`${sceneBg}.webp`),
+    path: asset ? asset.path : ROOT_ASSET_URL(`${sceneBg}.png`),
     label: asset ? asset.label : sceneBg,
   };
 }

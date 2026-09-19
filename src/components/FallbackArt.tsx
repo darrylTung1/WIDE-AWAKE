@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { resolveCharacterAsset } from '../data/assets';
 
 interface BackgroundArtProps {
   sceneId: 'bg_bedroom' | 'bg_living' | 'bg_hallway' | string;
@@ -511,6 +512,11 @@ export const FallbackCardArt: React.FC<{
   className?: string;
 }> = ({ cardId, variant, className = '' }) => {
   const isMonster = variant === 'monster' || variant === 'hallucination';
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [cardId, variant]);
 
   if (cardId === 'door') {
     return (
@@ -527,13 +533,29 @@ export const FallbackCardArt: React.FC<{
   }
 
   const charId = cardId as 'mum' | 'ravi' | 'aisyah' | 'jun';
+  const asset = resolveCharacterAsset(
+    charId,
+    isMonster ? 'monster' : 'human',
+    charId === 'jun'
+  );
+
   return (
     <div className={`w-full h-full bg-[#070e0a] flex items-center justify-center overflow-hidden ${className}`}>
-      <FallbackCharacter
-        id={charId}
-        variant={isMonster ? 'monster' : 'human'}
-        className="w-full h-full max-h-full object-contain"
-      />
+      {!imageError ? (
+        <img
+          src={asset.path}
+          alt={asset.label}
+          onError={() => setImageError(true)}
+          className="w-full h-full object-cover object-center"
+          referrerPolicy="no-referrer"
+        />
+      ) : (
+        <FallbackCharacter
+          id={charId}
+          variant={isMonster ? 'monster' : 'human'}
+          className="w-full h-full max-h-full object-contain"
+        />
+      )}
     </div>
   );
 };

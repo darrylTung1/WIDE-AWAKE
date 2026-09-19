@@ -42,6 +42,7 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
           alt={defaultAsset.label}
           onError={() => setImageFailed(true)}
           className="w-full h-full object-cover object-center"
+          referrerPolicy="no-referrer"
         />
       ) : (
         <FallbackBackground sceneId={sceneId} />
