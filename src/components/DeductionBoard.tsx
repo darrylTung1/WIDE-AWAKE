@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { CLUES_DATABASE } from '../data/clues';
 import { Sparkles, CheckCircle2, AlertTriangle, Lightbulb, ArrowRight, X } from 'lucide-react';
 
@@ -43,26 +43,26 @@ export const DEDUCTION_QUESTIONS: DeductionQuestion[] = [
   {
     id: 'deduction_step_2',
     stepNumber: 2,
-    question: 'THE ROOT CAUSE & BEACON',
-    prompt: 'What is the true origin of the mirror apparition and sleep disruption?',
+    question: 'WHAT SHOULD HAPPEN NEXT?',
+    prompt: 'Given the acute distress and physical observations, what should happen next?',
     options: [
       {
-        id: 'opt_curse',
-        text: 'An ancient acoustic resonance vibrating the glass.',
+        id: 'opt_handle_alone',
+        text: 'Try to manage the distress alone and wait for symptoms to resolve without outside help.',
         isCorrect: false,
       },
       {
-        id: 'opt_chemical_exhaustion',
-        text: 'Prolonged stimulant overdose and 80+ hours of continuous insomnia causing vivid waking dreams.',
+        id: 'opt_professional_help',
+        text: 'Jun is in severe physical and psychological distress and needs connection to professional medical care and support.',
         isCorrect: true,
       },
       {
-        id: 'opt_gas_leak',
-        text: 'An odorless carbon monoxide leak from the building heating unit.',
+        id: 'opt_further_investigation',
+        text: 'Keep the room barricaded and continue investigating the apartment alone.',
         isCorrect: false,
       },
     ],
-    requiredClueIds: ['c_stimulants', 'c_sleeplog'],
+    requiredClueIds: ['m_eyes', 'm_hands'],
   },
 ];
 
@@ -84,6 +84,17 @@ export const DeductionBoard: React.FC<DeductionBoardProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isSubmittingRef = useRef(false);
+  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Clean up any pending transition timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+        transitionTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   const stepData = DEDUCTION_QUESTIONS[currentStep];
 
@@ -139,9 +150,15 @@ export const DeductionBoard: React.FC<DeductionBoardProps> = ({
     setIsSubmitting(true);
     setErrorMessage(null);
 
+    // Cancel any existing timeout before setting a new one
+    if (transitionTimeoutRef.current) {
+      clearTimeout(transitionTimeoutRef.current);
+    }
+
     // If more steps remain, advance; otherwise complete deduction
     if (currentStep < DEDUCTION_QUESTIONS.length - 1) {
-      setTimeout(() => {
+      transitionTimeoutRef.current = setTimeout(() => {
+        transitionTimeoutRef.current = null;
         setCurrentStep((prev) => prev + 1);
         setSelectedOptionId(null);
         setAttachedClueIds([]);
@@ -149,7 +166,8 @@ export const DeductionBoard: React.FC<DeductionBoardProps> = ({
         setIsSubmitting(false);
       }, 400);
     } else {
-      setTimeout(() => {
+      transitionTimeoutRef.current = setTimeout(() => {
+        transitionTimeoutRef.current = null;
         onComplete();
       }, 400);
     }

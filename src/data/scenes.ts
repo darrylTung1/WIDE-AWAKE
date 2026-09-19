@@ -322,7 +322,7 @@ export const SCENES: Record<string, Scene> = {
       },
       {
         speaker: 'AISYAH',
-        text: "(checking Jun's pulse) The acute panic has eased, but the physical exhaustion and chemical impact need medical care. The paramedics are arriving to help you safely rest.",
+        text: "(speaking gently) We're right here with you, Jun. We called for professional medical help. The paramedics are arriving to provide medical care.",
         characterId: 'aisyah',
       },
       {

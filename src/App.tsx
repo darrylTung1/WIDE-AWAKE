@@ -443,9 +443,20 @@ export default function App() {
   // Global Keyboard Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement | null;
-      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) {
+      if (e.defaultPrevented) {
         return;
+      }
+
+      const target = e.target as HTMLElement | null;
+      if (target) {
+        if (target.isContentEditable) {
+          return;
+        }
+        const interactiveSelector =
+          'button, a, input, select, textarea, [contenteditable="true"], [role="button"], [role="link"], [role="radio"], [role="checkbox"], [role="tab"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"], [role="switch"], [role="option"], [role="treeitem"], [role="combobox"], [role="slider"], [role="spinbutton"]';
+        if (target.closest && target.closest(interactiveSelector)) {
+          return;
+        }
       }
 
       // Debug toggle shortcut: Ctrl + Alt + D
@@ -481,12 +492,11 @@ export default function App() {
           return;
         }
 
-        if (gameState.currentSceneId === 'act4_deduction' || gameState.currentSceneId === 'casefile') {
-          return;
-        }
-
-        if (currentScene.type === 'end') {
-          resetGame();
+        if (
+          gameState.currentSceneId === 'act4_deduction' ||
+          gameState.currentSceneId === 'casefile' ||
+          currentScene.type === 'end'
+        ) {
           return;
         }
 

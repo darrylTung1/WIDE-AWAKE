@@ -4,7 +4,6 @@ import {
   Heart,
   HelpCircle,
   ExternalLink,
-  Phone,
   Shield,
   ChevronDown,
   ChevronUp,
@@ -30,23 +29,23 @@ interface ReflectionOption {
 const REFLECTION_OPTIONS: ReflectionOption[] = [
   {
     id: 'support_professional',
-    label: 'Support them to connect with professional help or a trusted adult.',
+    label: 'Support them to connect with professional healthcare services or a trusted adult.',
     feedback:
-      'Supporting a friend to connect with qualified professionals or community helplines ensures they receive safe, confidential care without placing either of you in danger.',
+      'Supporting a friend to connect with qualified healthcare professionals or community addiction services helps ensure they receive appropriate support without putting anyone in danger.',
     isRecommended: true,
   },
   {
     id: 'handle_alone',
-    label: 'Try to diagnose, treat, or manage their condition completely on your own.',
+    label: 'Try to manage or treat their condition completely on your own.',
     feedback:
-      'It is natural to want to fix things, but managing acute mental health or substance distress requires qualified medical professionals. You do not have to carry the burden alone, and you should never put yourself in danger or promise secrecy at the expense of safety.',
+      'Managing acute substance distress or mental health crises requires qualified professional care. You should not carry the burden alone or promise secrecy at the expense of safety.',
     isRecommended: false,
   },
   {
     id: 'share_gossip',
     label: 'Share their situation with others as gossip or post about it online.',
     feedback:
-      'Publicising someone’s private crisis damages trust and can make them retreat further from reaching out for life-saving help. Compassionate privacy and direct connection to resources protect lives.',
+      'Spreading personal struggles can damage trust and discourage people from seeking help when they need it most. Respecting privacy while encouraging professional support is vital.',
     isRecommended: false,
   },
 ];
@@ -97,8 +96,9 @@ export const EndScreen: React.FC<EndScreenProps> = ({
 
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl text-center">
             When the door opened, there were no monsters or intruders. Jun was suffering from acute
-            substance-induced paranoia and severe sleep deprivation. Mum, Ravi, and Dr. Aisyah
-            stayed by his side to secure emergency medical care and start his recovery.
+            substance-induced paranoia, anxiety, and sleeplessness after methamphetamine use. Mum, Ravi,
+            and his colleague Aisyah stayed by his side and called for professional medical help. The visual
+            reveal marks the beginning of support, not instant recovery.
           </p>
 
           {/* Clearly Labelled Fictional-Story Note */}
@@ -108,9 +108,9 @@ export const EndScreen: React.FC<EndScreenProps> = ({
               <span className="font-bold text-emerald-300 font-mono uppercase tracking-wide">
                 Fictional Narrative Note:
               </span>{' '}
-              This interactive story portrays the psychological distress that can accompany
-              prolonged stimulant use and severe sleep deprivation. Jun is a person worthy of care
-              and support, and recovery begins with compassionate medical intervention.
+              This interactive story portrays the severe perceptual distortion, paranoia, and distress that can
+              accompany methamphetamine misuse. Jun is a person worthy of care and support. Recovery is a journey
+              that begins with connecting to professional help.
             </div>
           </div>
         </div>
@@ -190,81 +190,78 @@ export const EndScreen: React.FC<EndScreenProps> = ({
           )}
         </div>
 
-        {/* 3. Find Support (Always Available & Unlocked) */}
+        {/* 3. Find Support & Verified Resources */}
         <div className="bg-[#0c1812] border-2 border-emerald-500/70 rounded-3xl p-5 sm:p-7 shadow-[0_0_30px_rgba(16,185,129,0.1)] space-y-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-emerald-900/80 border border-emerald-400/80 flex items-center justify-center text-emerald-300">
-                <Phone className="w-4 h-4" />
-              </div>
-              <div>
-                <h3 className="text-base sm:text-lg font-bold text-white font-mono">
-                  Find Support & Resources
-                </h3>
-                <div className="text-xs text-emerald-400 font-mono">
-                  Confidential • Free • Non-Judgmental
-                </div>
+            <div>
+              <h3 className="text-base sm:text-lg font-bold text-white font-mono">
+                Find Support & Information
+              </h3>
+              <div className="text-xs text-emerald-400 font-mono">
+                Professional Healthcare & Guidance
               </div>
             </div>
           </div>
 
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            If you or someone you care about is experiencing distress related to substance use or mental
-            health, help is available. You do not have to navigate this alone.
+            If you or someone you know is affected by substance use concerns, professional services and
+            evidence-based resources can provide guidance.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-            {/* NAMS Helpline */}
+            {/* NAMS Support Contact */}
             <div className="bg-[#08120d] border border-[#1b3827] rounded-2xl p-4 flex flex-col justify-between space-y-3">
               <div>
                 <div className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider">
                   National Addictions Management Service (NAMS)
                 </div>
                 <div className="text-sm font-semibold text-white mt-1">
-                  All Addictions Helpline (24/7)
-                </div>
-                <div className="text-lg font-mono font-bold text-emerald-300 mt-0.5">
-                  1800-666-8668
-                </div>
-              </div>
-              <a
-                href="tel:18006668668"
-                aria-label="Call NAMS Helpline at 1800-666-8668"
-                className="inline-flex items-center justify-center gap-2 min-h-[44px] px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-mono font-bold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
-              >
-                <Phone className="w-3.5 h-3.5" />
-                <span>Call 1800-666-8668</span>
-              </a>
-            </div>
-
-            {/* Official Website */}
-            <div className="bg-[#08120d] border border-[#1b3827] rounded-2xl p-4 flex flex-col justify-between space-y-3">
-              <div>
-                <div className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider">
-                  NAMS Official Website
-                </div>
-                <div className="text-sm font-semibold text-white mt-1">
-                  Information, Guidance & Care
+                  Find Addiction Support
                 </div>
                 <div className="text-xs text-slate-400 mt-1">
                   Institute of Mental Health (IMH), Singapore
                 </div>
               </div>
               <a
-                href="https://www.nams.sg"
+                href="https://www.nhghealth.com.sg/imh/nams/contact-us"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Open NAMS website in a new tab"
+                aria-label="Open NAMS contact page in a new tab"
+                className="inline-flex items-center justify-center gap-2 min-h-[44px] px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-mono font-bold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                <span>Contact NAMS</span>
+              </a>
+            </div>
+
+            {/* Official CNB Information */}
+            <div className="bg-[#08120d] border border-[#1b3827] rounded-2xl p-4 flex flex-col justify-between space-y-3">
+              <div>
+                <div className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider">
+                  Central Narcotics Bureau (CNB)
+                </div>
+                <div className="text-sm font-semibold text-white mt-1">
+                  Methamphetamine Facts & Risks
+                </div>
+                <div className="text-xs text-slate-400 mt-1">
+                  Official Singapore Drug Information Portal
+                </div>
+              </div>
+              <a
+                href="https://www.cnb.gov.sg/drug-information/drugs-and-inhalants"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open CNB drug information page in a new tab"
                 className="inline-flex items-center justify-center gap-2 min-h-[44px] px-4 py-2.5 rounded-xl bg-[#14261d] hover:bg-[#1d382b] border border-[#234533] text-emerald-300 hover:text-white text-xs font-mono font-bold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
-                <span>Visit www.nams.sg</span>
+                <span>View CNB Drug Information</span>
               </a>
             </div>
           </div>
 
           <div className="text-[11px] font-mono text-slate-400 pt-1">
-            * In an immediate medical or psychiatric emergency in Singapore, please call 995 (Ambulance) or 999 (Police).
+            * In an immediate medical emergency in Singapore, please call 995 (Ambulance) or 999 (Police).
           </div>
         </div>
 
@@ -293,16 +290,18 @@ export const EndScreen: React.FC<EndScreenProps> = ({
                 <div className="bg-[#050c08] p-4 rounded-2xl border border-emerald-900/60 space-y-2">
                   <div className="font-mono font-bold text-emerald-400 text-xs uppercase flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Scientific & Medical Facts</span>
+                    <span>CNB & Health Facts</span>
                   </div>
                   <p className="text-slate-300 leading-relaxed text-xs">
-                    • Stimulant misuse rapidly depletes neurotransmitters and suppresses the urge to sleep, leading to severe sleep deprivation (80+ hours).
+                    • Methamphetamine is a powerful and highly addictive stimulant drug.
                     <br />
-                    • Extended sleeplessness and substance effects induce acute substance-induced psychosis: persecutory delusions, auditory distortions, and visual hallucinations.
+                    • Physiological effects include rapid heart rate, elevated body temperature, loss of appetite, tremors, and insomnia.
                     <br />
-                    • People experiencing psychosis often misinterpret safe environments and loved ones as severe threats.
+                    • Psychological effects include severe paranoia, intense anxiety, confusion, persecutory delusions, and auditory or visual hallucinations.
                     <br />
-                    • Medical treatment, hydration, and compassionate professional care allow the brain to safely stabilize.
+                    • Distortions from substance use can cause individuals to perceive safe environments and loved ones as hostile threats.
+                    <br />
+                    • Professional medical and addiction support are necessary for comprehensive care and recovery.
                   </p>
                 </div>
 
@@ -312,11 +311,11 @@ export const EndScreen: React.FC<EndScreenProps> = ({
                     <span>Narrative & Game Dramatisation</span>
                   </div>
                   <p className="text-slate-300 leading-relaxed text-xs">
-                    • The shadowy horned creatures and surreal detective notebook were visual metaphors representing Jun’s internal fear and panic.
+                    • The shadowy horned creatures, glowing eyes, and distorted case notebook were visual metaphors representing Jun’s internal terror and confusion.
                     <br />
-                    • The physical apartment was never invaded by external enemies; the locks and taped vents were placed by Jun himself in a state of terror.
+                    • The apartment was never invaded by outside intruders; Jun barricaded the doors out of overwhelming paranoia.
                     <br />
-                    • The figures outside were Mum, Ravi, and Dr. Aisyah bringing water and medical aid.
+                    • The figures outside were Mum, Ravi, and his colleague Aisyah seeking medical help for him.
                   </p>
                 </div>
               </div>
@@ -340,7 +339,7 @@ export const EndScreen: React.FC<EndScreenProps> = ({
 
         {/* Subtle Bottom Note */}
         <div className="text-center text-[10px] font-mono text-slate-500 pt-2">
-          WIDE AWAKE • A Fictional Interactive Case on Sleep Deprivation, Substance Paranoia, and Reaching for Help
+          WIDE AWAKE • A Fictional Interactive Case on Substance Paranoia and Reaching for Help
         </div>
       </div>
     </div>

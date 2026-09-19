@@ -22,7 +22,7 @@ const CASE_CARDS: CaseFileCard[] = [
     cardId: 'mum',
     backTitle: 'MUM (MRS. TAN)',
     backSubtitle: 'Concerned Mother',
-    backDesc: 'Stayed awake for 3 nights in tears, pleading through the door with Jun to open up.',
+    backDesc: 'Stayed awake outside the room in tears, pleading through the door with Jun to open up.',
   },
   {
     id: 'card_ravi',
@@ -31,28 +31,28 @@ const CASE_CARDS: CaseFileCard[] = [
     frontDesc: 'Appeared as a surveillance demon watching Jun through electronic screens.',
     cardId: 'ravi',
     backTitle: 'RAVI',
-    backSubtitle: 'Best Friend & Roommate',
-    backDesc: 'Phoned doctors and waited outside with emergency keys to prevent Jun from self-harm.',
+    backSubtitle: 'Close Friend & Roommate',
+    backDesc: 'Stayed by the door to reassure Jun and contacted emergency medical services to ensure he received safe care.',
   },
   {
     id: 'card_aisyah',
     frontTitle: 'CLOAKED FIGURE',
-    frontSubtitle: 'Masked syringe bearer',
-    frontDesc: 'Interpreted as an assassin carrying chemical poisons into the apartment.',
+    frontSubtitle: 'Figure in yellow cardigan',
+    frontDesc: 'Interpreted as a hostile intruder attempting to break into the apartment.',
     cardId: 'aisyah',
-    backTitle: 'DR. AISYAH',
-    backSubtitle: 'Attending Physician',
-    backDesc: 'Brought emergency sedatives and intravenous hydration to treat stimulant psychosis.',
+    backTitle: 'AISYAH',
+    backSubtitle: 'Concerned Colleague',
+    backDesc: 'Checked on Jun after he missed work, brought food, and helped contact emergency medical support.',
   },
   {
     id: 'card_jun',
     frontTitle: 'CORRUPTED REFLECTION',
     frontSubtitle: 'The sleepless watcher in the glass',
-    frontDesc: 'Perceived as a demonic alter-ego trapped on the other side of the mirror.',
+    frontDesc: 'Perceived as a distorted entity trapped on the other side of the mirror.',
     cardId: 'jun',
     backTitle: 'JUN TAN',
-    backSubtitle: 'Severe Sleep Deprivation Subject',
-    backDesc: '80+ hours awake. Hallucinations were the brain dreaming while still consciously awake.',
+    backSubtitle: 'Person in Acute Distress',
+    backDesc: 'Experiencing severe substance-induced paranoia, anxiety, and sleeplessness after methamphetamine use.',
   },
 ];
 
@@ -66,16 +66,24 @@ export const CaseFileScreen: React.FC<CaseFileScreenProps> = ({
   reduceMotion = false,
 }) => {
   const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
+  const [viewedCards, setViewedCards] = useState<Record<string, boolean>>({});
 
   const handleToggleCard = (cardId: string) => {
+    const nextFlipped = !flippedCards[cardId];
     setFlippedCards((prev) => ({
       ...prev,
-      [cardId]: !prev[cardId],
+      [cardId]: nextFlipped,
     }));
+    if (nextFlipped) {
+      setViewedCards((prev) => ({
+        ...prev,
+        [cardId]: true,
+      }));
+    }
   };
 
-  const allFlipped = CASE_CARDS.every((c) => flippedCards[c.id]);
-  const flippedCount = Object.values(flippedCards).filter(Boolean).length;
+  const allViewed = CASE_CARDS.every((c) => viewedCards[c.id]);
+  const viewedCount = CASE_CARDS.filter((c) => viewedCards[c.id]).length;
 
   return (
     <div
@@ -95,14 +103,14 @@ export const CaseFileScreen: React.FC<CaseFileScreenProps> = ({
               CASE FILE REVELATIONS
             </h2>
             <div className="text-xs text-emerald-400 font-mono">
-              Click or tap each card to flip between Hallucination and Reality ({flippedCount}/4 Revealed)
+              Click or tap each card to flip between Hallucination and Reality ({viewedCount}/4 Revealed)
             </div>
           </div>
         </div>
 
         {/* Status Chip */}
         <div className="flex items-center gap-2">
-          {allFlipped ? (
+          {allViewed ? (
             <div className="px-3 py-1 rounded-full bg-emerald-950 border border-emerald-400 text-emerald-300 font-mono text-xs font-bold flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>ALL FILES DECRYPTED</span>
@@ -120,6 +128,7 @@ export const CaseFileScreen: React.FC<CaseFileScreenProps> = ({
       <div className="w-full max-w-6xl mx-auto flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         {CASE_CARDS.map((card) => {
           const isFlipped = !!flippedCards[card.id];
+          const hasBeenViewed = !!viewedCards[card.id];
 
           return (
             <button
@@ -132,6 +141,8 @@ export const CaseFileScreen: React.FC<CaseFileScreenProps> = ({
               className={`w-full min-h-[320px] rounded-2xl p-4 flex flex-col justify-between text-left transition-all border-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 ${
                 isFlipped
                   ? 'bg-[#0d1c15] border-emerald-500/80 shadow-[0_0_30px_rgba(16,185,129,0.2)]'
+                  : hasBeenViewed
+                  ? 'bg-[#09110d] border-emerald-700/60 hover:border-emerald-500'
                   : 'bg-[#09110d] border-[#1d3829] hover:border-amber-500/60'
               }`}
             >
@@ -154,7 +165,7 @@ export const CaseFileScreen: React.FC<CaseFileScreenProps> = ({
                   <h4 className="text-sm sm:text-base font-bold text-white font-mono truncate">
                     {isFlipped ? card.backTitle : card.frontTitle}
                   </h4>
-                  {isFlipped && (
+                  {hasBeenViewed && (
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                   )}
                 </div>
@@ -183,7 +194,7 @@ export const CaseFileScreen: React.FC<CaseFileScreenProps> = ({
         <button
           id="case-file-proceed-btn"
           type="button"
-          disabled={!allFlipped}
+          disabled={!allViewed}
           onClick={onProceed}
           aria-label="Proceed to the final conclusion"
           className="w-full sm:w-auto min-h-[48px] px-8 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-mono font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(16,185,129,0.4)] border border-emerald-300 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"

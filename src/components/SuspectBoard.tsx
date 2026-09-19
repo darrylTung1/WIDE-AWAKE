@@ -38,27 +38,27 @@ export const SuspectBoard: React.FC<SuspectBoardProps> = ({
       notes:
         mode === 'hallucination'
           ? 'Hovered outside the bedroom door at 02:00 AM, crying and begging for the door to open.'
-          : 'Pounding on bedroom door, terrified for Jun after 80 hours of stimulant-driven insomnia.',
+          : 'Pounding on bedroom door, terrified for Jun after he barricaded himself inside for days.',
     },
     {
       id: 'ravi',
       name: mode === 'hallucination' ? 'FOUR-EYED PROJECTION' : 'RAVI (BEST FRIEND)',
-      role: mode === 'hallucination' ? 'Distorted figure with flickering eyes' : 'Close Friend / Colleague',
+      role: mode === 'hallucination' ? 'Distorted figure with flickering eyes' : 'Close Friend / Roommate',
       encountered: questioned.includes('ravi'),
       notes:
         mode === 'hallucination'
           ? 'Spoke through the door with fragmented audio, asking Jun to step away from the window.'
-          : 'Called emergency contacts and Dr. Aisyah after discovering Jun was barricading his apartment.',
+          : 'Stayed outside the door to reassure Jun and contacted emergency medical services when Jun showed severe distress.',
     },
     {
       id: 'aisyah',
-      name: mode === 'hallucination' ? 'CLOAKED FIGURE' : 'DR. AISYAH (PHYSICIAN)',
-      role: mode === 'hallucination' ? 'Unsettling presence with syringe' : 'Attending Doctor',
+      name: mode === 'hallucination' ? 'CLOAKED FIGURE' : 'AISYAH (COLLEAGUE)',
+      role: mode === 'hallucination' ? 'Figure in yellow cardigan' : 'Concerned Colleague',
       encountered: questioned.includes('aisyah'),
       notes:
         mode === 'hallucination'
-          ? 'Appeared with medication, attempting to break the seal on the bedroom door.'
-          : 'Prescribing immediate emergency sedation to halt acute stimulant-induced paranoia.',
+          ? 'Appeared outside the bedroom door speaking in distorted fragments about Jun missing from work.'
+          : 'Came over after Jun missed work, brought food, and helped contact his family and emergency medical support.',
     },
   ];
 
