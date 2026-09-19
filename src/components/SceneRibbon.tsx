@@ -7,7 +7,7 @@ interface SceneRibbonProps {
   gameState: GameState;
   onJumpToScene: (sceneId: string) => void;
   onReset: () => void;
-  onToggleShovedFlag: () => void;
+  onToggleSteppedBackFlag: () => void;
   onTriggerIdlePrompt: () => void;
 }
 
@@ -15,7 +15,7 @@ export const SceneRibbon: React.FC<SceneRibbonProps> = ({
   gameState,
   onJumpToScene,
   onReset,
-  onToggleShovedFlag,
+  onToggleSteppedBackFlag,
   onTriggerIdlePrompt,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -90,16 +90,16 @@ export const SceneRibbon: React.FC<SceneRibbonProps> = ({
               </span>
             </div>
             <div className="flex items-center justify-between text-[11px]">
-              <span className="text-slate-400">Flag (shoved):</span>
+              <span className="text-slate-400">Flag (steppedBack):</span>
               <button
-                onClick={onToggleShovedFlag}
+                onClick={onToggleSteppedBackFlag}
                 className={`px-1.5 py-0.5 rounded font-mono text-[10px] font-bold border ${
-                  gameState.flags.shoved
-                    ? 'bg-red-950 border-red-600 text-red-300'
+                  gameState.flags.steppedBack
+                    ? 'bg-amber-950 border-amber-600 text-amber-300'
                     : 'bg-[#101b15] border-[#22352a] text-slate-400'
                 }`}
               >
-                {gameState.flags.shoved ? 'TRUE (Lashed out)' : 'FALSE (Froze)'}
+                {gameState.flags.steppedBack ? 'TRUE (Stepped Back)' : 'FALSE (Stayed Still)'}
               </button>
             </div>
             <div className="pt-1">

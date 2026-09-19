@@ -68,7 +68,8 @@ export interface Scene {
 }
 
 export interface GameFlags {
-  shoved: boolean;
+  steppedBack: boolean;
+  shoved?: boolean;
 }
 
 export interface GameState {

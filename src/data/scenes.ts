@@ -25,11 +25,11 @@ export const SCENES: Record<string, Scene> = {
     lines: [
       {
         speaker: '(N)',
-        text: "4:12 AM. Something's wrong with this house.",
+        text: '4:12 AM. Something is wrong with this house.',
       },
       {
         speaker: '(N)',
-        text: 'I need to investigate the room before I unlock that door. Tap the glowing investigation points.',
+        text: 'Inspect the room. Hear their stories. Reconsider the evidence.',
       },
     ],
     nextSceneId: 'act2_suspects',
@@ -48,7 +48,7 @@ export const SCENES: Record<string, Scene> = {
     lines: [
       {
         speaker: '(N)',
-        text: 'Three things are waiting in the living room.',
+        text: 'Three figures are waiting in the living room.',
       },
       {
         speaker: '(N)',
@@ -56,25 +56,25 @@ export const SCENES: Record<string, Scene> = {
       },
       {
         speaker: '(N)',
-        text: 'Whatever they are, they know something. Question them.',
+        text: 'Whatever they are, they know something. Question them to hear their stories.',
       },
     ],
     choices: [
       {
         id: 'q_mum',
-        text: 'Question the one with the bracelet (Mum)',
+        text: 'Question the one with the jade bracelet',
         nextSceneId: 'act2_mum_testimony',
         addClue: 't_mum',
       },
       {
         id: 'q_ravi',
-        text: 'Question the one with the cap (Ravi)',
+        text: 'Question the one with the red cap',
         nextSceneId: 'act2_ravi_testimony',
         addClue: 't_ravi',
       },
       {
         id: 'q_aisyah',
-        text: 'Question the one with the cardigan (Aisyah)',
+        text: 'Question the one with the yellow cardigan',
         nextSceneId: 'act2_aisyah_testimony',
         addClue: 't_aisyah',
       },
@@ -95,7 +95,7 @@ export const SCENES: Record<string, Scene> = {
       },
       {
         speaker: '(N)',
-        text: "Clue recorded: Mum's testimony. It's been listening to me through the door.",
+        text: "Testimony recorded: Mum's voice. She's been listening with worry through the bedroom door.",
       },
     ],
     nextSceneId: 'act2_suspects',
@@ -115,7 +115,7 @@ export const SCENES: Record<string, Scene> = {
       },
       {
         speaker: '(N)',
-        text: "Clue recorded: Ravi's testimony. It's studying my body. Why?",
+        text: "Testimony recorded: Ravi's voice. He noticed trembling, sweating, and sleeplessness.",
       },
     ],
     nextSceneId: 'act2_suspects',
@@ -135,7 +135,7 @@ export const SCENES: Record<string, Scene> = {
       },
       {
         speaker: '(N)',
-        text: 'Clue recorded: Aisyah\'s testimony. "Take something." It\'s accusing me.',
+        text: 'Testimony recorded: Aisyah\'s voice. She is urging everyone to seek emergency medical help.',
       },
     ],
     nextSceneId: 'act2_suspects',
@@ -150,7 +150,7 @@ export const SCENES: Record<string, Scene> = {
     lines: [
       {
         speaker: '(N)',
-        text: 'The cap one is coming closer. It is holding something out to me.',
+        text: 'The figure in the red cap steps closer, holding out a glass of water.',
       },
       {
         speaker: '??? (red cap)',
@@ -158,49 +158,26 @@ export const SCENES: Record<string, Scene> = {
         characterId: 'ravi',
       },
     ],
-    choicePrompt: 'How do you react to the cap creature reaching out?',
+    choicePrompt: 'How do you react to the offered glass?',
     choices: [
       {
-        id: 'shove',
-        text: 'Option A: Shove it away',
-        nextSceneId: 'act2_shove_outcome',
-        setFlags: { shoved: true },
-        addClue: 'c_shove',
+        id: 'c_step_back',
+        text: 'Option A: Step back in fear',
+        nextSceneId: 'act2_step_back_outcome',
+        setFlags: { steppedBack: true },
+        addClue: 'c_step_back',
       },
       {
-        id: 'freeze',
-        text: 'Option B: Freeze',
-        nextSceneId: 'act2_freeze_outcome',
+        id: 'c_stay_still',
+        text: 'Option B: Stay still',
+        nextSceneId: 'act2_stay_still_outcome',
+        setFlags: { steppedBack: false },
       },
     ],
   },
 
-  act2_shove_outcome: {
-    id: 'act2_shove_outcome',
-    type: 'dialogue',
-    bg: 'bg_living',
-    mode: 'hallucination',
-    characters: [{ id: 'aisyah', position: 'right', variant: 'monster' }],
-    lines: [
-      {
-        speaker: '(N)',
-        text: 'I lashed out. Ravi crashed back against the furniture and slides out of frame.',
-      },
-      {
-        speaker: '??? (yellow cardigan)',
-        text: '[RAVI!]',
-        characterId: 'aisyah',
-      },
-      {
-        speaker: '(N)',
-        text: 'I run for the hallway.',
-      },
-    ],
-    nextSceneId: 'act3_mirror',
-  },
-
-  act2_freeze_outcome: {
-    id: 'act2_freeze_outcome',
+  act2_step_back_outcome: {
+    id: 'act2_step_back_outcome',
     type: 'dialogue',
     bg: 'bg_living',
     mode: 'hallucination',
@@ -208,16 +185,40 @@ export const SCENES: Record<string, Scene> = {
     lines: [
       {
         speaker: '(N)',
-        text: 'It puts the glass down on the table and steps back.',
+        text: 'I stepped back in alarm. Ravi immediately lowers his hands and sets the glass gently on the table.',
       },
       {
         speaker: '??? (red cap)',
-        text: "[Okay. It's here when you want it.]",
+        text: "[It's okay, Jun. We're not crowding you. Take your time.]",
         characterId: 'ravi',
       },
       {
         speaker: '(N)',
-        text: 'I run for the hallway.',
+        text: 'I turn toward the hallway mirror.',
+      },
+    ],
+    nextSceneId: 'act3_mirror',
+  },
+
+  act2_stay_still_outcome: {
+    id: 'act2_stay_still_outcome',
+    type: 'dialogue',
+    bg: 'bg_living',
+    mode: 'hallucination',
+    characters: [{ id: 'ravi', position: 'center', variant: 'monster' }],
+    lines: [
+      {
+        speaker: '(N)',
+        text: 'I stood motionless. Ravi places the glass on the table within reach and steps back.',
+      },
+      {
+        speaker: '??? (red cap)',
+        text: "[The water is here on the table whenever you're ready.]",
+        characterId: 'ravi',
+      },
+      {
+        speaker: '(N)',
+        text: 'I turn toward the hallway mirror.',
       },
     ],
     nextSceneId: 'act3_mirror',
@@ -232,11 +233,11 @@ export const SCENES: Record<string, Scene> = {
     lines: [
       {
         speaker: '(N)',
-        text: 'The mirror. The thing in it is the only one that looks human.',
+        text: 'The hallway mirror. The reflection is the only thing that looks familiar.',
       },
       {
         speaker: '(N)',
-        text: "Examine the reflection. Something is terribly wrong.",
+        text: 'Examine the reflection to understand what is happening to the body.',
       },
     ],
     nextSceneId: 'act4_deduction',
@@ -251,15 +252,14 @@ export const SCENES: Record<string, Scene> = {
     lines: [
       {
         speaker: '(N)',
-        text: 'Two questions before everything falls apart.',
+        text: 'Two key questions to piece together what happened tonight.',
       },
       {
         speaker: '(N)',
-        text: 'Are the monsters real? What is making me see them this way?',
+        text: 'Reconsider the evidence to separate fear from reality.',
       },
     ],
     nextSceneId: 'reveal',
-    placeholderInfo: 'Act 4: Deduction puzzle engine (Will be built with interactive questions and clue validation in Stage 5).',
   },
 
   reveal: {
@@ -271,15 +271,15 @@ export const SCENES: Record<string, Scene> = {
     lines: [
       {
         speaker: '(N)',
-        text: 'The monster was never in the living room.',
+        text: 'The threat was never an external intruder in the apartment.',
       },
       {
         speaker: '(N)',
-        text: 'Jun had been using ice for three days without sleep.',
+        text: 'Jun was experiencing severe distress, sleeplessness, and substance-induced perception changes.',
       },
       {
         speaker: '(N)',
-        text: 'The drug turned his home into a trap, and his family into monsters.',
+        text: 'The people he feared were his family and closest friends, trying to keep him safe.',
       },
     ],
     nextSceneId: 'casefile',
@@ -294,15 +294,14 @@ export const SCENES: Record<string, Scene> = {
     lines: [
       {
         speaker: '(N)',
-        text: 'CASE FILE: What was really happening.',
+        text: 'RECONSIDER THE EVIDENCE: What was happening.',
       },
       {
         speaker: '(N)',
-        text: 'Every clue flips to reveal the truth behind the hallucination.',
+        text: 'Examine each record to see the reality behind the hallucinations.',
       },
     ],
     nextSceneId: 'flashback',
-    placeholderInfo: 'Case File 3D card flips (Will be built with interactive rotateY flips in Stage 7).',
   },
 
   flashback: {
@@ -317,14 +316,18 @@ export const SCENES: Record<string, Scene> = {
     ],
     lines: [
       {
+        speaker: 'MUM',
+        text: "(holding Jun's hands gently) The terrifying figures you saw were our shadows at the door, Jun. We were so frightened when you locked yourself in for three days.",
+        characterId: 'mum',
+      },
+      {
         speaker: 'AISYAH',
-        text: "We called for help. We're staying right here.",
+        text: "(checking Jun's pulse) The acute panic has eased, but the physical exhaustion and chemical impact need medical care. The paramedics are arriving to help you safely rest.",
         characterId: 'aisyah',
       },
       {
-        speaker: 'MUM',
-        text: "You're not alone, Jun.",
-        characterId: 'mum',
+        speaker: '(N)',
+        text: 'The distortion lifted so Jun could see his loved ones, but medical stabilization and recovery have just begun.',
       },
     ],
     nextSceneId: 'end',
@@ -347,6 +350,6 @@ export const INITIAL_GAME_STATE = {
   clues: [] as string[],
   questioned: [] as ('mum' | 'ravi' | 'aisyah')[],
   flags: {
-    shoved: false,
+    steppedBack: false,
   },
 };

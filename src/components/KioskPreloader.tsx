@@ -1,59 +1,88 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ShieldCheck, Loader2 } from 'lucide-react';
-
-const PRELOAD_ASSETS = [
-  '/bg_bedroom.webp',
-  '/bg_living.webp',
-  '/bg_hallway.webp',
-  '/mum_monster.webp',
-  '/mum_human.webp',
-  '/ravi_monster.webp',
-  '/ravi_human.webp',
-  '/aisyah_monster.webp',
-  '/aisyah_human.webp',
-  '/jun_mirror.webp',
-  '/food_trays.webp',
-  '/jun_silhouette.webp',
-];
+import { PRELOAD_IMAGE_PATHS } from '../data/assets';
 
 interface KioskPreloaderProps {
   onComplete: () => void;
+  maxTimeoutMs?: number;
 }
 
-export const KioskPreloader: React.FC<KioskPreloaderProps> = ({ onComplete }) => {
-  const [loadedCount, setLoadedCount] = useState(0);
+export const KioskPreloader: React.FC<KioskPreloaderProps> = ({
+  onComplete,
+  maxTimeoutMs = 1500,
+}) => {
+  const [settledCount, setSettledCount] = useState(0);
+  const [successCount, setSuccessCount] = useState(0);
+  const completedRef = useRef(false);
+  const imagesRef = useRef<HTMLImageElement[]>([]);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    let count = 0;
-    const total = PRELOAD_ASSETS.length;
+  const safeComplete = useCallback(() => {
+    if (completedRef.current) return;
+    completedRef.current = true;
 
-    // Preload image assets safely without crashing if files aren't in filesystem
-    PRELOAD_ASSETS.forEach((src) => {
-      const img = new Image();
-      img.onload = () => {
-        count++;
-        setLoadedCount(count);
-        if (count >= total) {
-          setTimeout(onComplete, 400);
-        }
-      };
-      img.onerror = () => {
-        // Still count errors so loading screen proceeds seamlessly
-        count++;
-        setLoadedCount(count);
-        if (count >= total) {
-          setTimeout(onComplete, 400);
-        }
-      };
-      img.src = src;
+    // Clean up all image element references and handlers
+    imagesRef.current.forEach((img) => {
+      img.onload = null;
+      img.onerror = null;
     });
+    imagesRef.current = [];
 
-    // Fallback timer: max 1.5s then proceed automatically
-    const fallback = setTimeout(onComplete, 1500);
-    return () => clearTimeout(fallback);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
+    onComplete();
   }, [onComplete]);
 
-  const percentage = Math.round((loadedCount / PRELOAD_ASSETS.length) * 100);
+  useEffect(() => {
+    completedRef.current = false;
+    let settled = 0;
+    let successful = 0;
+    const total = PRELOAD_IMAGE_PATHS.length;
+
+    imagesRef.current = PRELOAD_IMAGE_PATHS.map((src) => {
+      const img = new Image();
+
+      const onSettled = (isSuccess: boolean) => {
+        settled++;
+        if (isSuccess) successful++;
+        setSettledCount(settled);
+        setSuccessCount(successful);
+
+        if (settled >= total) {
+          timeoutRef.current = setTimeout(() => {
+            safeComplete();
+          }, 150);
+        }
+      };
+
+      img.onload = () => onSettled(true);
+      img.onerror = () => onSettled(false);
+      img.src = src;
+      return img;
+    });
+
+    // Fallback bounded timeout
+    const fallbackTimer = setTimeout(() => {
+      safeComplete();
+    }, maxTimeoutMs);
+
+    return () => {
+      clearTimeout(fallbackTimer);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      imagesRef.current.forEach((img) => {
+        img.onload = null;
+        img.onerror = null;
+      });
+      imagesRef.current = [];
+    };
+  }, [maxTimeoutMs, safeComplete]);
+
+  const percentage = Math.round((settledCount / PRELOAD_IMAGE_PATHS.length) * 100);
 
   return (
     <div
@@ -67,10 +96,11 @@ export const KioskPreloader: React.FC<KioskPreloaderProps> = ({ onComplete }) =>
 
         <div className="space-y-1 font-mono">
           <h1 className="text-xl font-bold tracking-widest text-white uppercase">
-            PARANOIA // INITIATIVE
+            WIDE AWAKE
           </h1>
+          {/* Requirement 6: Say 'Preparing your story' */}
           <p className="text-xs text-emerald-400/80">
-            OFFLINE KIOSK SYSTEM READY // PRELOADING ASSETS
+            Preparing your story
           </p>
         </div>
 
@@ -85,7 +115,11 @@ export const KioskPreloader: React.FC<KioskPreloaderProps> = ({ onComplete }) =>
           <div className="flex justify-between text-[11px] font-mono text-slate-400">
             <span className="flex items-center gap-1.5">
               <Loader2 className="w-3 h-3 animate-spin text-emerald-400" />
-              <span>Verifying local media buffer...</span>
+              <span>
+                {settledCount >= PRELOAD_IMAGE_PATHS.length
+                  ? `Environment ready (${successCount}/${PRELOAD_IMAGE_PATHS.length} assets ready)`
+                  : `Preparing assets (${settledCount}/${PRELOAD_IMAGE_PATHS.length})...`}
+              </span>
             </span>
             <span className="text-emerald-400 font-bold">{percentage}%</span>
           </div>

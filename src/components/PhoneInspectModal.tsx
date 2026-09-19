@@ -1,175 +1,182 @@
-import React, { useState } from 'react';
-import { Smartphone, X, PhoneMissed, MessageSquare, ArrowLeft, Clock } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Smartphone, CheckCircle2, MessageSquare, AlertCircle, X, ChevronRight } from 'lucide-react';
+import { useModalAccessibility } from '../hooks/useModalAccessibility';
 
 interface PhoneInspectModalProps {
+  onAwardClue: () => void;
   onClose: () => void;
+  isClueCollected: boolean;
 }
 
-export const PhoneInspectModal: React.FC<PhoneInspectModalProps> = ({ onClose }) => {
-  const [activeTab, setActiveTab] = useState<'chats' | 'calls' | 'dealer'>('chats');
+export const PhoneInspectModal: React.FC<PhoneInspectModalProps> = ({
+  onAwardClue,
+  onClose,
+  isClueCollected,
+}) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState<'messages' | 'notes'>('messages');
+  const [messagesRead, setMessagesRead] = useState(false);
+
+  useModalAccessibility({
+    isOpen: true,
+    onClose,
+    modalRef,
+    closeOnEscape: true,
+  });
+
+  const handleReadMessages = () => {
+    setMessagesRead(true);
+    if (!isClueCollected) {
+      onAwardClue();
+    }
+  };
 
   return (
     <div
-      id="phone-inspect-modal"
-      className="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 select-none animate-fadeIn"
+      id="phone-modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="phone-inspect-title"
+      className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 select-none animate-fadeIn overflow-y-auto"
       onClick={onClose}
     >
-      {/* Smartphone Frame */}
       <div
-        className="w-full max-w-sm h-[600px] max-h-[92%] bg-[#080d0a] border-4 border-[#254233] rounded-[36px] shadow-[0_0_60px_rgba(0,0,0,0.9)] flex flex-col overflow-hidden relative"
+        ref={modalRef}
+        id="phone-device-container"
+        tabIndex={-1}
+        className="w-full max-w-md bg-[#0c1611] border-2 border-[#1f3d2b] rounded-3xl p-4 sm:p-5 shadow-[0_0_50px_rgba(0,0,0,0.9)] flex flex-col justify-between max-h-[92dvh] overflow-y-auto my-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Notch / Speaker */}
-        <div className="w-full bg-black py-2.5 flex justify-center items-center relative z-20">
-          <div className="w-24 h-4 bg-[#141e17] rounded-full flex items-center justify-end px-3">
-            <div className="w-2 h-2 rounded-full bg-emerald-500/40" />
+        {/* Phone Top Speaker & Notch Bar */}
+        <div className="flex items-center justify-between border-b border-[#1b3426] pb-3 mb-3">
+          <div className="flex items-center gap-2">
+            <Smartphone className="w-5 h-5 text-emerald-400" />
+            <h3
+              id="phone-inspect-title"
+              className="text-xs sm:text-sm font-mono font-bold text-emerald-300 tracking-wider uppercase"
+            >
+              JUN'S SECURE PHONE
+            </h3>
           </div>
-          {/* Close button */}
-          <button
-            onClick={onClose}
-            className="absolute right-4 top-2 text-slate-400 hover:text-white transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono text-emerald-400/70 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/40">
+              03:42 AM • 14%
+            </span>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Put phone down / close modal"
+              className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-full bg-[#16291e] hover:bg-[#203c2c] flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        {/* Status Bar */}
-        <div className="px-5 py-1 flex items-center justify-between text-[11px] font-mono text-emerald-400/90 border-b border-[#14231b] bg-[#0c1611]">
-          <span>04:12 AM</span>
-          <span className="text-[10px] text-red-400 font-bold tracking-wider">3% BATTERY</span>
-        </div>
-
-        {/* Phone Tabs */}
-        <div className="flex border-b border-[#1b3126] bg-[#0e1a14] text-xs font-mono">
+        {/* Tab Navigation */}
+        <div className="flex items-center gap-2 mb-3 bg-[#08100c] p-1 rounded-xl border border-[#162b1f]">
           <button
-            onClick={() => setActiveTab('chats')}
-            className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 transition-colors ${
-              activeTab === 'chats'
-                ? 'text-emerald-300 font-bold border-b-2 border-emerald-400 bg-[#14261d]'
+            type="button"
+            onClick={() => setActiveTab('messages')}
+            aria-pressed={activeTab === 'messages'}
+            className={`flex-1 min-h-[44px] py-2 rounded-lg text-xs font-mono font-bold flex items-center justify-center gap-2 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 ${
+              activeTab === 'messages'
+                ? 'bg-emerald-900/80 text-emerald-200 border border-emerald-500/50 shadow'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <MessageSquare className="w-3.5 h-3.5" />
-            <span>Messages (34)</span>
+            <span>Unread Group Chat</span>
           </button>
+
           <button
-            onClick={() => setActiveTab('calls')}
-            className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 transition-colors ${
-              activeTab === 'calls'
-                ? 'text-emerald-300 font-bold border-b-2 border-emerald-400 bg-[#14261d]'
+            type="button"
+            onClick={() => setActiveTab('notes')}
+            aria-pressed={activeTab === 'notes'}
+            className={`flex-1 min-h-[44px] py-2 rounded-lg text-xs font-mono font-bold flex items-center justify-center gap-2 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 ${
+              activeTab === 'notes'
+                ? 'bg-emerald-900/80 text-emerald-200 border border-emerald-500/50 shadow'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <PhoneMissed className="w-3.5 h-3.5 text-red-400" />
-            <span>Missed (19)</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('dealer')}
-            className={`flex-1 py-2.5 flex items-center justify-center gap-1.5 transition-colors ${
-              activeTab === 'dealer'
-                ? 'text-emerald-300 font-bold border-b-2 border-emerald-400 bg-[#14261d]'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Clock className="w-3.5 h-3.5 text-amber-400" />
-            <span>"Ghost"</span>
+            <AlertCircle className="w-3.5 h-3.5" />
+            <span>Memo / Audio Log</span>
           </button>
         </div>
 
-        {/* Phone Content Screen */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#080e0a]">
-          {activeTab === 'chats' && (
+        {/* Screen Content */}
+        <div className="flex-1 bg-[#060c09] rounded-2xl border border-[#162b1f] p-3 sm:p-4 space-y-3 overflow-y-auto mb-3 min-h-[180px] max-h-[45dvh]">
+          {activeTab === 'messages' ? (
             <div className="space-y-3">
-              {/* Mum Chat preview */}
-              <div className="p-3 rounded-2xl bg-[#0f1d16] border border-[#1b3627] space-y-1">
-                <div className="flex justify-between items-center text-[11px] text-emerald-400 font-mono">
-                  <span className="font-bold">MUM</span>
-                  <span>Yesterday, 11:42 PM</span>
+              <div className="bg-[#0b1610] p-3 rounded-xl border border-[#1c3626]">
+                <div className="text-[11px] font-mono text-emerald-400 font-bold mb-1">
+                  MUM [02:15 AM]:
                 </div>
-                <p className="text-xs text-slate-200">
-                  "Jun, open the bedroom door please. You haven't touched your dinner since Tuesday. Ravi is here with me."
+                <p className="text-xs sm:text-sm text-slate-200">
+                  "Jun, why is your bedroom door locked from inside? Please open up. Take your pills. You've been awake for 80 hours straight."
                 </p>
               </div>
 
-              {/* Work Chat */}
-              <div className="p-3 rounded-2xl bg-[#0f1d16] border border-[#1b3627] space-y-1">
-                <div className="flex justify-between items-center text-[11px] text-emerald-400 font-mono">
-                  <span className="font-bold">WORK // MARCUS</span>
-                  <span>Yesterday, 3:15 PM</span>
+              <div className="bg-[#0b1610] p-3 rounded-xl border border-[#1c3626]">
+                <div className="text-[11px] font-mono text-emerald-400 font-bold mb-1">
+                  RAVI [03:02 AM]:
                 </div>
-                <p className="text-xs text-slate-200">
-                  "Third day you haven't shown up or replied. HR is escalating this. Are you okay?"
+                <p className="text-xs sm:text-sm text-slate-200">
+                  "Bro, we called Dr. Aisyah. Stop nailing the windows shut. No one is coming through the vents. It's sleep deprivation."
                 </p>
               </div>
 
-              {/* Aisyah Chat */}
-              <div className="p-3 rounded-2xl bg-[#0f1d16] border border-[#1b3627] space-y-1">
-                <div className="flex justify-between items-center text-[11px] text-emerald-400 font-mono">
-                  <span className="font-bold">AISYAH</span>
-                  <span>Wednesday, 2:04 AM</span>
+              <div className="bg-[#122319] p-3 rounded-xl border border-emerald-500/40">
+                <div className="text-[11px] font-mono text-amber-300 font-bold mb-1">
+                  DR. AISYAH [03:20 AM]:
                 </div>
-                <p className="text-xs text-slate-200">
-                  "Jun, what happened at that party? You were acting paranoid. Stop ignoring our calls."
+                <p className="text-xs sm:text-sm text-emerald-100">
+                  "Jun, this is acute stimulant-induced paranoia. The monster you think is stalking your apartment is a projection of severe sleep debt. Let us help you."
                 </p>
               </div>
             </div>
-          )}
-
-          {activeTab === 'calls' && (
-            <div className="space-y-2">
-              {[
-                { name: 'Mum', time: 'Today, 3:55 AM', count: 8 },
-                { name: 'Ravi', time: 'Today, 2:40 AM', count: 5 },
-                { name: 'Aisyah', time: 'Yesterday, 11:20 PM', count: 4 },
-                { name: 'Work (Marcus)', time: 'Yesterday, 5:30 PM', count: 2 },
-              ].map((c, i) => (
-                <div
-                  key={i}
-                  className="flex items-center justify-between p-3 rounded-xl bg-[#0e1812] border border-[#172b20]"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <PhoneMissed className="w-4 h-4 text-red-400" />
-                    <div>
-                      <div className="text-xs font-bold text-white">
-                        {c.name} ({c.count})
-                      </div>
-                      <div className="text-[10px] text-slate-400 font-mono">{c.time}</div>
-                    </div>
-                  </div>
-                  <span className="text-[10px] text-red-400 font-mono font-semibold">MISSED</span>
+          ) : (
+            <div className="space-y-3">
+              <div className="bg-[#0b1610] p-3 rounded-xl border border-[#1c3626]">
+                <div className="text-[11px] font-mono text-amber-400 font-bold mb-1">
+                  VOICE MEMO 4 — "NIGHT 4 NO SLEEP"
                 </div>
-              ))}
-            </div>
-          )}
-
-          {activeTab === 'dealer' && (
-            <div className="space-y-2">
-              <div className="text-[11px] font-mono text-amber-400/90 text-center py-1">
-                ENCRYPTED CHAT // "GHOST"
-              </div>
-              <div className="space-y-2 text-xs">
-                <div className="bg-[#14231a] p-2.5 rounded-xl rounded-tl-none max-w-[85%] border border-[#213b2c] text-slate-200">
-                  "Got pure crystal glass. 1g packet ready at Clarke Quay. Don't sleep for 3 days guaranteed."
-                </div>
-                <div className="bg-emerald-950 p-2.5 rounded-xl rounded-tr-none ml-auto max-w-[85%] border border-emerald-700/60 text-emerald-100">
-                  "Coming down now."
-                </div>
-                <div className="bg-[#14231a] p-2.5 rounded-xl rounded-tl-none max-w-[85%] border border-[#213b2c] text-slate-200">
-                  "Remember: hydrate or you will bug out."
-                </div>
+                <p className="text-xs sm:text-sm text-slate-200 italic">
+                  "...my heart won't stop racing. The walls are whispering. I taped the door seams with masking tape. But it's already inside... in the mirror..."
+                </p>
               </div>
             </div>
           )}
         </div>
 
-        {/* Phone Bottom Home Bar */}
-        <div className="p-3 bg-[#0a120d] border-t border-[#14231b] flex items-center justify-between">
+        {/* Action Button: Read & Record Clue */}
+        <div className="space-y-2">
+          {!isClueCollected ? (
+            <button
+              type="button"
+              onClick={handleReadMessages}
+              aria-label="Read text logs and record clue in case notebook"
+              className="w-full min-h-[48px] py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-mono font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg border border-emerald-400 cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+            >
+              <CheckCircle2 className="w-4 h-4 text-emerald-200" />
+              <span>READ LOGS & RECORD CLUE</span>
+            </button>
+          ) : (
+            <div className="w-full py-2 px-3 rounded-xl bg-emerald-950/80 border border-emerald-500/50 flex items-center justify-center gap-2 text-xs font-mono text-emerald-300">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span>Evidence "Phone Chat History" recorded in Case Notebook</span>
+            </div>
+          )}
+
           <button
+            type="button"
             onClick={onClose}
-            className="w-full py-2.5 rounded-xl bg-[#14261c] hover:bg-[#1a3325] text-emerald-300 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-colors"
+            aria-label="Put Phone Down and return to scene"
+            className="w-full min-h-[44px] py-2.5 px-4 rounded-xl bg-[#14261d] hover:bg-[#1f3c2d] active:scale-95 text-slate-300 hover:text-white font-mono text-xs font-bold flex items-center justify-center gap-1.5 border border-[#213f2d] cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Put Phone Down</span>
+            <span>PUT PHONE DOWN</span>
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>

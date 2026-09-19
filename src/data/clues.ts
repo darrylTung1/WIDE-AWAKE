@@ -5,7 +5,6 @@ export interface ClueItem {
   shortDesc: string;
   fullEvidence: string;
   sceneOrigin: string;
-  iconName?: string;
   badgeText?: string;
 }
 
@@ -13,17 +12,15 @@ export interface Hotspot {
   id: string;
   name: string;
   clueId: string;
-  // Coordinates in percentage (0 - 100) of the stage
   x: number; // left %
   y: number; // top %
   width: number; // width %
   height: number; // height %
   examineLines: { speaker: string; text: string }[];
   hint: string;
-  glowColor?: string;
 }
 
-// Complete Master Clue Catalog across Acts
+// Clue Catalog across Acts
 export const CLUES_DATABASE: Record<string, ClueItem> = {
   // Act 1: Bedroom Search Clues
   c_phone: {
@@ -31,25 +28,25 @@ export const CLUES_DATABASE: Record<string, ClueItem> = {
     name: 'Unlocked Phone (34 unread messages)',
     category: 'physical',
     shortDesc: 'Messages from boss & mum asking where you are',
-    fullEvidence: 'Group chats, direct messages from Mum and boss since Monday: "Jun where are you? Are you sick? Please reply." Time is 4:12 AM.',
+    fullEvidence: 'Group chats and direct messages from Mum and colleagues since Monday: "Jun where are you? Are you sick? Please reply." Time on screen is 4:12 AM.',
     sceneOrigin: 'Act 1: Bedroom Nightstand',
     badgeText: 'PHYSICAL',
   },
   c_paranoia: {
     id: 'c_paranoia',
-    name: 'Locked Door / Nailed Windows',
+    name: 'Locked Door & Taped Seams',
     category: 'physical',
-    shortDesc: 'Deadbolts locked, tape along the window frames',
-    fullEvidence: 'The room was fortified from the inside. Tape covers the vents and door crack. The lock was turned by my own hand.',
+    shortDesc: 'Deadbolts locked, tape sealing window and door frames',
+    fullEvidence: 'The room was sealed and fortified from the inside. Tape covers the vents and door crack. The deadbolt was turned shut from within.',
     sceneOrigin: 'Act 1: Bedroom Doorway',
     badgeText: 'PHYSICAL',
   },
   c_supplies: {
     id: 'c_supplies',
-    name: 'Scattered Empty Bottles & Straws',
+    name: 'Scattered Foil & Plastic Straws',
     category: 'physical',
-    shortDesc: 'Foil packets, empty plastic bottles, chemical odor',
-    fullEvidence: 'Crushed plastic bottles, discarded foil, cut straws, and a lingering bitter chemical smell. None of this belongs to a burglar.',
+    shortDesc: 'Foil packets, crushed bottles, and a chemical smell',
+    fullEvidence: 'Crushed plastic bottles, discarded foil, cut straws, and a lingering bitter chemical smell. None of this was brought by an intruder.',
     sceneOrigin: 'Act 1: Bedroom Floor',
     badgeText: 'PHYSICAL',
   },
@@ -69,7 +66,7 @@ export const CLUES_DATABASE: Record<string, ClueItem> = {
     name: "Ravi's Testimony (Red Cap)",
     category: 'testimony',
     shortDesc: '"You called me at 3 AM saying people were outside."',
-    fullEvidence: '"You called me at 3 AM. Said there were people outside your window. Jun... there is no one outside."',
+    fullEvidence: '"You called me at 3 AM. Said there were people outside your window. Jun... there is no one outside. Your pupils are huge and you\'re drenched in sweat."',
     sceneOrigin: 'Act 2: Living Room',
     badgeText: 'TESTIMONY',
   },
@@ -82,12 +79,12 @@ export const CLUES_DATABASE: Record<string, ClueItem> = {
     sceneOrigin: 'Act 2: Living Room',
     badgeText: 'TESTIMONY',
   },
-  c_shove: {
-    id: 'c_shove',
-    name: 'Aggression Event (Shoved Ravi)',
+  c_step_back: {
+    id: 'c_step_back',
+    name: 'Reaction to Offered Water',
     category: 'event',
-    shortDesc: 'Violent reaction when a glass of water was offered',
-    fullEvidence: 'When the entity in the red cap reached forward with water, I shoved it violently. It fell clutching its wrist.',
+    shortDesc: 'Fearful recoil when a glass of water was held out',
+    fullEvidence: 'When the figure in the red cap stepped forward holding a glass of water, Jun retreated in alarm, misinterpreting the gesture as a threat.',
     sceneOrigin: 'Act 2: Living Room',
     badgeText: 'EVENT',
   },
@@ -95,128 +92,128 @@ export const CLUES_DATABASE: Record<string, ClueItem> = {
   // Act 3: Mirror Hotspots
   m_eyes: {
     id: 'm_eyes',
-    name: 'Dilated Pupils & Sunken Sockets',
+    name: 'Dilated Pupils & Sleepless Eyes',
     category: 'mirror',
-    shortDesc: 'Black saucer pupils, dark hollows under the eyes',
-    fullEvidence: 'The pupils are dilated so wide the irises are barely visible. Deep, bruised rings encircle the sockets. No sleep for days.',
+    shortDesc: 'Enlarged pupils and dark hollows from prolonged sleeplessness',
+    fullEvidence: 'The pupils are dilated so wide that the dark center fills almost the entire iris. Deep, bruised rings encircle the eyes after sleepless nights.',
     sceneOrigin: 'Act 3: Hallway Mirror',
-    badgeText: 'MIRROR',
+    badgeText: 'OBSERVATION',
   },
   m_jaw: {
     id: 'm_jaw',
-    name: 'Clenched Jaw & Cracked Lips',
+    name: 'Clenched Jaw & Parched Lips',
     category: 'mirror',
-    shortDesc: 'Severe bruxism, dry chapped lips, clenched teeth',
-    fullEvidence: 'The jaw muscles are locked in a rigid spasm. Teeth are grinding audibly. Severely dehydrated with dry white residue at the mouth.',
+    shortDesc: 'Tight involuntary clenching, dry chapped lips',
+    fullEvidence: 'The jaw muscles are locked in a tight clench. The lips are severely parched and dry from acute dehydration.',
     sceneOrigin: 'Act 3: Hallway Mirror',
-    badgeText: 'MIRROR',
+    badgeText: 'OBSERVATION',
   },
   m_hands: {
     id: 'm_hands',
-    name: 'Trembling Fingers & Rapid Pulse',
+    name: 'Trembling Hands & Rapid Pulse',
     category: 'mirror',
-    shortDesc: 'Fine resting tremor, sweat-soaked palms, racing pulse',
-    fullEvidence: 'Uncontrollable tremors in both hands. Fingernails dug raw into the palms. The jugular vein pulses at an alarming rhythm.',
+    shortDesc: 'Shaking fingers, sweating palms, and visible rapid pulse',
+    fullEvidence: 'Hands are trembling noticeably against the counter edge. A rapid pulse beats visibly in the neck.',
     sceneOrigin: 'Act 3: Hallway Mirror',
-    badgeText: 'MIRROR',
+    badgeText: 'OBSERVATION',
   },
 };
 
-// Act 1 Hotspots (Bedroom)
+// Act 1 Hotspots (Bedroom) - Aligned with SVG bedroom 1920x1080 coordinate space
 export const ACT1_HOTSPOTS: Hotspot[] = [
   {
     id: 'hs_phone',
-    name: 'Glowing Phone on Nightstand',
+    name: 'Glowing Phone on Bedside',
     clueId: 'c_phone',
-    x: 18,
-    y: 54,
-    width: 14,
+    x: 34,
+    y: 62,
+    width: 12,
     height: 18,
-    hint: 'A smartphone screen pulses silently in the dark beside the mattress.',
+    hint: 'A phone screen glows softly beside the mattress.',
     examineLines: [
       { speaker: '(N)', text: 'The screen is lit. 34 unread messages.' },
       { speaker: '(N)', text: 'Mum: "Jun where are you? Answer me please."' },
-      { speaker: '(N)', text: 'My team lead: "Third day missing. We called your emergency contact."' },
-      { speaker: '(N)', text: 'Clue added: Unlocked Phone with urgent messages from my family and workplace.' },
+      { speaker: '(N)', text: 'Team lead: "Third day missing. We called your emergency contact."' },
+      { speaker: '(N)', text: 'Clue recorded: Phone with urgent messages from family and friends.' },
     ],
   },
   {
     id: 'hs_door',
     name: 'Fortified Doorway & Deadbolt',
     clueId: 'c_paranoia',
-    x: 74,
-    y: 28,
-    width: 16,
-    height: 48,
-    hint: 'The bedroom door has heavy duct tape covering every seam and the lock.',
+    x: 77,
+    y: 20,
+    width: 17,
+    height: 55,
+    hint: 'Heavy tape and locks line the bedroom door.',
     examineLines: [
-      { speaker: '(N)', text: 'The deadbolt is thrown shut. Tape lines the entire perimeter of the door frame.' },
-      { speaker: '(N)', text: 'I taped it shut myself. Because I thought someone was trying to pump gas through the vents.' },
-      { speaker: '(N)', text: 'Clue added: Fortified Door. Sealed from the inside.' },
+      { speaker: '(N)', text: 'The deadbolt is thrown shut. Heavy tape lines the edges of the frame.' },
+      { speaker: '(N)', text: 'The barricade was set from the inside, out of overwhelming fear of imaginary threats outside.' },
+      { speaker: '(N)', text: 'Clue recorded: Sealed bedroom door, locked from within.' },
     ],
   },
   {
     id: 'hs_supplies',
-    name: 'Cluttered Floor & Paraphernalia',
+    name: 'Scattered Items on Floor',
     clueId: 'c_supplies',
-    x: 42,
-    y: 68,
-    width: 22,
-    height: 18,
-    hint: 'Piles of crushed bottles, cut plastic straws, and burnt foil.',
+    x: 55,
+    y: 71,
+    width: 16,
+    height: 16,
+    hint: 'Crushed plastic bottles, cut straws, and discarded foil on the floor.',
     examineLines: [
-      { speaker: '(N)', text: 'Crushed plastic bottles. Cut straws. Scorched tin foil.' },
-      { speaker: '(N)', text: 'A heavy, bitter chemical odor clings to the carpet.' },
-      { speaker: '(N)', text: 'Clue added: Ingestion Paraphernalia. This is not the scene of a home invasion.' },
+      { speaker: '(N)', text: 'Crushed plastic bottles. Cut straws. Discarded foil.' },
+      { speaker: '(N)', text: 'A sharp, bitter chemical odor clings to the bedroom carpet.' },
+      { speaker: '(N)', text: 'Clue recorded: Scattered foil and supplies on the floor.' },
     ],
   },
 ];
 
-// Act 3 Hotspots (The Mirror)
+// Act 3 Hotspots (The Mirror) - Aligned with mirror reflection & vanity
 export const ACT3_HOTSPOTS: Hotspot[] = [
   {
     id: 'hs_eyes',
-    name: 'Look closely at the eyes',
+    name: 'Examine the eyes',
     clueId: 'm_eyes',
-    x: 43,
-    y: 20,
-    width: 14,
-    height: 14,
-    hint: 'Look into the reflection’s eyes.',
+    x: 44,
+    y: 24,
+    width: 12,
+    height: 12,
+    hint: 'Look closely into the eyes in the mirror reflection.',
     examineLines: [
-      { speaker: '(N)', text: 'The pupils fill almost the entire eye. Pure black disks.' },
-      { speaker: '(N)', text: 'Dark hollow circles beneath them. The eyes of someone who hasn’t rested in 90 hours.' },
-      { speaker: '(N)', text: 'Clue added: Dilated Pupils & Extreme Sleep Deprivation.' },
+      { speaker: '(N)', text: 'The pupils fill almost the entire eye. Dark hollow circles beneath them.' },
+      { speaker: '(N)', text: 'The look of someone whose mind and body have not rested in several days.' },
+      { speaker: '(N)', text: 'Observation recorded: Dilated pupils and severe exhaustion.' },
     ],
   },
   {
     id: 'hs_jaw',
-    name: 'Inspect the jaw & mouth',
+    name: 'Examine the jaw & mouth',
     clueId: 'm_jaw',
     x: 44,
-    y: 35,
+    y: 38,
     width: 12,
-    height: 14,
-    hint: 'Examine the lower half of the face in the reflection.',
+    height: 12,
+    hint: 'Inspect the lower face and mouth in the reflection.',
     examineLines: [
-      { speaker: '(N)', text: 'The jaw muscles are locked tight, clenching until the molars ache.' },
-      { speaker: '(N)', text: 'Lips are dry and cracked with white dehydration crust at the corners.' },
-      { speaker: '(N)', text: 'Clue added: Severe Bruxism & Extreme Dehydration.' },
+      { speaker: '(N)', text: 'The jaw is locked in a tight clench, teeth grinding involuntarily.' },
+      { speaker: '(N)', text: 'Lips are parched, dry, and cracked.' },
+      { speaker: '(N)', text: 'Observation recorded: Involuntary jaw clenching and dehydration.' },
     ],
   },
   {
     id: 'hs_hands',
-    name: 'Inspect the hands & chest',
+    name: 'Examine the hands & chest',
     clueId: 'm_hands',
     x: 36,
-    y: 52,
+    y: 56,
     width: 28,
-    height: 22,
-    hint: 'Look at the hands clutching the hallway vanity.',
+    height: 18,
+    hint: 'Look at the hands gripping the edge of the vanity.',
     examineLines: [
-      { speaker: '(N)', text: 'The fingers are trembling uncontrollably against the edge of the mirror frame.' },
-      { speaker: '(N)', text: 'The pulse in the neck is hammer-striking at over 150 beats per minute.' },
-      { speaker: '(N)', text: 'Clue added: Autonomic Tremors & Tachycardia.' },
+      { speaker: '(N)', text: 'Fingers trembling uncontrollably against the counter.' },
+      { speaker: '(N)', text: 'A racing pulse is visible in the side of the neck.' },
+      { speaker: '(N)', text: 'Observation recorded: Trembling hands and racing pulse.' },
     ],
   },
 ];

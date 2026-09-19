@@ -1,213 +1,178 @@
-import React, { useState, useEffect } from 'react';
-import { User, HelpCircle, ShieldAlert, Sparkles } from 'lucide-react';
-
-interface SuspectCard {
-  id: 'mum' | 'ravi' | 'aisyah' | 'mystery';
-  alias: string;
-  trueIdentity: string;
-  item: string;
-  behaviorHallucination: string;
-  behaviorTruth: string;
-  imageMonster: string;
-  imageHuman: string;
-}
-
-const SUSPECTS: SuspectCard[] = [
-  {
-    id: 'mum',
-    alias: 'The Jade One',
-    trueIdentity: 'Mum (Mrs. Tan)',
-    item: 'Jade Bracelet on wrist',
-    behaviorHallucination: 'Weeping specter lurking in doorway with green claw.',
-    behaviorTruth: 'Holding a bowl of porridge, exhausted and crying for her son.',
-    imageMonster: '/assets/characters/mum_monster.webp',
-    imageHuman: '/assets/characters/mum_human.webp',
-  },
-  {
-    id: 'ravi',
-    alias: 'The Cap Entity',
-    trueIdentity: 'Ravi (Best Friend)',
-    item: 'Red Baseball Cap',
-    behaviorHallucination: 'Tall silhouette advancing with a hostile glass weapon.',
-    behaviorTruth: 'Offering a glass of tap water, terrified of Jun’s aggression.',
-    imageMonster: '/assets/characters/ravi_monster.webp',
-    imageHuman: '/assets/characters/ravi_human.webp',
-  },
-  {
-    id: 'aisyah',
-    alias: 'The Yellow Phantom',
-    trueIdentity: 'Aisyah (Colleague)',
-    item: 'Yellow Cardigan',
-    behaviorHallucination: 'Prowling around the room holding strange surveillance notes.',
-    behaviorTruth: 'Holding work contact sheets and emergency numbers, pleading for Jun to get medical help.',
-    imageMonster: '/assets/characters/aisyah_monster.webp',
-    imageHuman: '/assets/characters/aisyah_human.webp',
-  },
-  {
-    id: 'mystery',
-    alias: 'The Fourth Suspect ???',
-    trueIdentity: 'Jun (The Intoxicated Mind)',
-    item: 'Silver Mirror in Hallway',
-    behaviorHallucination: 'The intruder who poisoned the food and barricaded the vents.',
-    behaviorTruth: 'Jun himelf in severe methamphetamine-induced psychosis. There is no external intruder.',
-    imageMonster: '/assets/characters/jun_monster.webp',
-    imageHuman: '/assets/characters/jun_human.webp',
-  },
-];
+import React, { useRef } from 'react';
+import { Users, ShieldAlert, CheckCircle2, X } from 'lucide-react';
+import { useModalAccessibility } from '../hooks/useModalAccessibility';
+import { FallbackCardArt } from './FallbackArt';
 
 interface SuspectBoardProps {
-  questioned: ('mum' | 'ravi' | 'aisyah')[];
-  shoved: boolean;
-  isOpen: boolean;
+  questioned: string[];
+  mode: 'hallucination' | 'clean';
   onClose: () => void;
 }
 
 export const SuspectBoard: React.FC<SuspectBoardProps> = ({
   questioned,
-  shoved,
-  isOpen,
+  mode,
   onClose,
 }) => {
-  // Mystery card flickers every 2.5 seconds to show Jun's silhouette
-  const [flickerMystery, setFlickerMystery] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const interval = setInterval(() => {
-      setFlickerMystery(true);
-      setTimeout(() => setFlickerMystery(false), 700);
-    }, 2800);
+  useModalAccessibility({
+    isOpen: true,
+    onClose,
+    modalRef,
+    closeOnEscape: true,
+  });
 
-    return () => clearInterval(interval);
-  }, [isOpen]);
-
-  if (!isOpen) return null;
+  const suspects: {
+    id: 'mum' | 'ravi' | 'aisyah';
+    name: string;
+    role: string;
+    encountered: boolean;
+    notes: string;
+  }[] = [
+    {
+      id: 'mum',
+      name: mode === 'hallucination' ? 'TALL SHADOW ENTITY' : 'MUM (MRS. TAN)',
+      role: mode === 'hallucination' ? 'Apparition with elongated claws' : 'Concerned Mother',
+      encountered: questioned.includes('mum'),
+      notes:
+        mode === 'hallucination'
+          ? 'Hovered outside the bedroom door at 02:00 AM, crying and begging for the door to open.'
+          : 'Pounding on bedroom door, terrified for Jun after 80 hours of stimulant-driven insomnia.',
+    },
+    {
+      id: 'ravi',
+      name: mode === 'hallucination' ? 'FOUR-EYED PROJECTION' : 'RAVI (BEST FRIEND)',
+      role: mode === 'hallucination' ? 'Distorted figure with flickering eyes' : 'Close Friend / Colleague',
+      encountered: questioned.includes('ravi'),
+      notes:
+        mode === 'hallucination'
+          ? 'Spoke through the door with fragmented audio, asking Jun to step away from the window.'
+          : 'Called emergency contacts and Dr. Aisyah after discovering Jun was barricading his apartment.',
+    },
+    {
+      id: 'aisyah',
+      name: mode === 'hallucination' ? 'CLOAKED FIGURE' : 'DR. AISYAH (PHYSICIAN)',
+      role: mode === 'hallucination' ? 'Unsettling presence with syringe' : 'Attending Doctor',
+      encountered: questioned.includes('aisyah'),
+      notes:
+        mode === 'hallucination'
+          ? 'Appeared with medication, attempting to break the seal on the bedroom door.'
+          : 'Prescribing immediate emergency sedation to halt acute stimulant-induced paranoia.',
+    },
+  ];
 
   return (
     <div
-      id="suspect-board-modal"
-      className="absolute inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 select-none animate-fadeIn"
+      id="suspect-board-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="suspect-board-title"
+      className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 select-none animate-fadeIn overflow-y-auto"
       onClick={onClose}
     >
       <div
-        id="suspect-board-content"
-        className="w-full max-w-4xl max-h-[90%] bg-[#08110c] border-2 border-[#1e3b2b] rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden"
+        ref={modalRef}
+        id="suspect-board-container"
+        tabIndex={-1}
+        className="w-full max-w-4xl bg-[#09120e] border-2 border-[#1c3928] rounded-3xl p-4 sm:p-6 shadow-[0_0_50px_rgba(0,0,0,0.95)] flex flex-col justify-between max-h-[92dvh] overflow-y-auto my-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Board Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#182f22] bg-[#050c08]">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-950/80 border border-amber-500/50 flex items-center justify-center text-amber-400">
-              <ShieldAlert className="w-5 h-5" />
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-[#182e21] pb-3 mb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-emerald-950/80 border border-emerald-500/60 flex items-center justify-center text-emerald-300">
+              <Users className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white tracking-wider font-mono">
-                CRIME SCENE // SUSPECT BOARD
-              </h3>
-              <p className="text-xs text-slate-400 font-mono">
-                Cross-referencing entities present in the apartment
-              </p>
+              <h2
+                id="suspect-board-title"
+                className="text-base sm:text-lg font-bold text-white tracking-wide font-mono"
+              >
+                WITNESS & SUBJECT PROFILES
+              </h2>
+              <div className="text-xs text-slate-400 font-mono">
+                {questioned.length} of 3 people encountered
+              </div>
             </div>
           </div>
+
           <button
+            type="button"
             onClick={onClose}
-            className="px-4 py-1.5 rounded-lg bg-[#12241a] hover:bg-[#1b3829] text-xs font-mono text-emerald-300 border border-[#213f2d] transition-colors cursor-pointer"
+            aria-label="Close Suspect Board"
+            className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-full bg-[#12241a] hover:bg-[#1b3828] flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
           >
-            Close Board [ESC]
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* 4 Cards Grid */}
-        <div className="flex-1 p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 overflow-y-auto bg-[#070e0a]">
-          {SUSPECTS.map((s) => {
-            const isMystery = s.id === 'mystery';
-            const isQuestioned =
-              s.id === 'mum' || s.id === 'ravi' || s.id === 'aisyah'
-                ? questioned.includes(s.id)
-                : false;
-
+        {/* Suspect Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          {suspects.map((s) => {
             return (
               <div
                 key={s.id}
                 id={`suspect-card-${s.id}`}
-                className={`flex flex-col justify-between rounded-xl border p-4 transition-all duration-300 ${
-                  isMystery
-                    ? flickerMystery
-                      ? 'bg-red-950/40 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)]'
-                      : 'bg-[#0e1a14] border-[#203c2c] hover:border-amber-500/60'
-                    : isQuestioned
-                    ? 'bg-[#0f2117] border-emerald-500/80 shadow-[0_0_15px_rgba(16,185,129,0.2)]'
-                    : 'bg-[#0b1610] border-[#182c20]'
+                className={`rounded-2xl border p-4 flex flex-col justify-between transition-all ${
+                  s.encountered
+                    ? 'bg-[#0e1b15] border-[#254633] shadow-lg'
+                    : 'bg-[#070e0a] border-[#16271c] opacity-60'
                 }`}
               >
                 <div>
-                  {/* Photo area */}
-                  <div className="w-full h-36 rounded-lg bg-black/60 border border-[#1b3425] overflow-hidden relative mb-3 flex items-center justify-center">
-                    <img
-                      src={isMystery ? (flickerMystery ? s.imageHuman : s.imageMonster) : s.imageMonster}
-                      alt={s.alias}
-                      className={`w-full h-full object-cover object-top transition-opacity duration-300 ${
-                        isMystery && flickerMystery ? 'opacity-80 scale-105' : 'opacity-90'
-                      }`}
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-
-                    {/* Badge */}
-                    <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/70 border border-white/20 text-[9px] font-mono text-white">
-                      {isMystery ? (flickerMystery ? 'JUN TAN' : 'UNKNOWN ???') : s.alias}
-                    </div>
-
-                    {/* Clue status badge */}
-                    {isQuestioned && (
-                      <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-emerald-950/90 border border-emerald-500 text-[9px] font-mono text-emerald-300 font-bold">
-                        TESTIMONY LOGGED
-                      </div>
-                    )}
-
-                    {isMystery && (
-                      <div
-                        className={`absolute inset-0 flex items-center justify-center font-mono font-bold text-lg tracking-widest transition-opacity ${
-                          flickerMystery ? 'text-red-400 opacity-100' : 'text-slate-500 opacity-40'
-                        }`}
-                      >
-                        {flickerMystery ? 'JUN TAN' : '???'}
+                  {/* Portrait or silhouette */}
+                  <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-black/60 border border-[#1b3425] mb-3 relative flex items-center justify-center">
+                    {s.encountered ? (
+                      <FallbackCardArt
+                        cardId={s.id}
+                        variant={mode === 'hallucination' ? 'monster' : 'human'}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-slate-600 font-mono text-xs gap-1.5 p-4 text-center">
+                        <ShieldAlert className="w-6 h-6 stroke-[1.5]" />
+                        <span>UNENCOUNTERED</span>
                       </div>
                     )}
                   </div>
 
-                  {/* Suspect details */}
-                  <div className="space-y-1.5">
-                    <div className="text-sm font-bold text-white flex items-center justify-between">
-                      <span>{s.alias}</span>
-                      {isQuestioned && <span className="text-emerald-400 text-xs">✓</span>}
-                    </div>
-                    <div className="text-[11px] font-mono text-emerald-400/90">
-                      Key Item: {s.item}
-                    </div>
-                    <div className="text-xs text-slate-300 italic pt-1 leading-relaxed">
-                      "{isMystery ? (flickerMystery ? s.behaviorTruth : s.behaviorHallucination) : s.behaviorHallucination}"
-                    </div>
-
-                    {s.id === 'ravi' && shoved && (
-                      <div className="text-[10px] font-mono text-red-400 bg-red-950/60 p-1.5 rounded border border-red-900/60 mt-1">
-                        * Event: Subject struck or shoved during reach.
-                      </div>
+                  <div className="flex items-center justify-between gap-1 mb-1">
+                    <h4 className="text-sm sm:text-base font-bold text-white font-mono truncate">
+                      {s.encountered ? s.name : 'UNKNOWN WITNESS'}
+                    </h4>
+                    {s.encountered && (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                     )}
                   </div>
-                </div>
 
-                <div className="pt-3 border-t border-[#162a1e] mt-3">
-                  <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider block">
-                    {isMystery ? 'The Unresolved Intruder' : isQuestioned ? 'Status: Questioned' : 'Status: Unquestioned'}
-                  </span>
+                  <div className="text-xs text-emerald-400/80 font-mono mb-2">
+                    {s.encountered ? s.role : 'Awaiting contact'}
+                  </div>
+
+                  <p className="text-xs text-slate-300 leading-relaxed break-words">
+                    {s.encountered ? s.notes : 'No testimony recorded yet.'}
+                  </p>
                 </div>
               </div>
             );
           })}
         </div>
+
+        {/* Footer */}
+        <div className="pt-3 border-t border-[#182e21] flex justify-between items-center text-xs font-mono text-slate-400">
+          <span>Press ESC to return to case</span>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close board and continue"
+            className="min-h-[44px] px-4 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold font-mono text-xs cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+          >
+            CLOSE BOARD [ESC]
+          </button>
+        </div>
       </div>
     </div>
   );
 };
+

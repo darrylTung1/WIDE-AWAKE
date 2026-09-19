@@ -8,6 +8,8 @@ interface DialogueBoxProps {
   mode?: 'hallucination' | 'clean';
   onAdvance?: () => void;
   canAdvance?: boolean;
+  isPortrait?: boolean;
+  reduceMotion?: boolean;
 }
 
 export const DialogueBox: React.FC<DialogueBoxProps> = ({
@@ -16,50 +18,81 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
   mode = 'hallucination',
   onAdvance,
   canAdvance = true,
+  isPortrait = false,
+  reduceMotion = false,
 }) => {
   const isNarration = speaker === '(N)' || speaker === '' || speaker === 'Narration';
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.key === 'Enter' || e.key === ' ') && canAdvance && onAdvance) {
+      e.preventDefault();
+      onAdvance();
+    }
+  };
 
   return (
     <div
       id="dialogue-box-container"
-      onClick={onAdvance}
-      className="absolute bottom-0 left-0 right-0 h-[25%] z-30 flex flex-col justify-end p-4 md:p-6 cursor-pointer group"
+      className={
+        isPortrait
+          ? 'w-full z-30 flex flex-col justify-end p-2 sm:p-3'
+          : 'absolute bottom-0 left-0 right-0 z-30 flex flex-col justify-end p-3 sm:p-4 md:p-5 max-h-[48%]'
+      }
     >
       <div
         id="dialogue-panel"
-        className="w-full h-full rounded-xl bg-[#09100d]/90 border border-[#1e3027]/80 backdrop-blur-md px-6 py-4 flex flex-col justify-between shadow-2xl relative transition-colors duration-150 hover:border-[#2f4f3e]"
+        tabIndex={canAdvance ? 0 : -1}
+        role="region"
+        aria-label={isNarration ? 'Narration' : `Dialogue from ${speaker}`}
+        onKeyDown={handleKeyDown}
+        className="w-full rounded-xl bg-[#08120d]/95 border border-[#1e3b2b]/90 backdrop-blur-md px-4 sm:px-6 py-3.5 sm:py-4 flex flex-col justify-between shadow-2xl relative transition-colors duration-150 hover:border-[#2f5540] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
       >
         {/* Speaker Name Tag */}
         {!isNarration && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-1.5">
             <span
               id="speaker-label"
-              className="inline-block px-3 py-1 bg-[#14231c] text-[#86efac] border border-[#274636] rounded-md text-sm md:text-base font-semibold tracking-wider uppercase"
+              className="inline-block px-3 py-1 bg-[#12241b] text-[#86efac] border border-[#274937] rounded-md text-xs sm:text-sm md:text-base font-bold tracking-wider uppercase font-mono"
             >
               {speaker}
             </span>
           </div>
         )}
 
-        {/* Dialogue Text (Readable from 1.5m away: scaled font) */}
-        <div className="flex-1 flex items-center mt-1 pr-12">
+        {/* Dialogue Text (Readable, responsive, wrapped) */}
+        <div className="flex-1 flex items-center my-1 pr-2 sm:pr-4">
           <p
             id="dialogue-text"
-            className={`text-slate-100 font-medium leading-relaxed tracking-wide ${
+            className={`font-medium leading-relaxed tracking-wide break-words ${
               isNarration
-                ? 'italic text-emerald-200/90 text-lg md:text-2xl'
-                : 'text-lg md:text-2xl text-slate-100'
+                ? 'italic text-emerald-200/90 text-base sm:text-lg md:text-xl'
+                : 'text-slate-100 text-base sm:text-lg md:text-xl'
             }`}
           >
-            <GlitchText text={text} mode={mode} />
+            <GlitchText text={text} mode={mode} reduceMotion={reduceMotion} />
           </p>
         </div>
 
-        {/* Tap to advance prompt (min 44-64px touch target) */}
-        {canAdvance && (
-          <div className="absolute right-4 bottom-4 flex items-center gap-1.5 text-emerald-400/80 text-xs md:text-sm font-semibold tracking-wide animate-pulse">
-            <span>TAP TO CONTINUE</span>
-            <ChevronRight className="w-5 h-5 stroke-[2.5]" />
+        {/* Advance Control Bar: Explicit >=44px button with accessible label */}
+        {canAdvance && onAdvance && (
+          <div className="flex items-center justify-between pt-2 mt-1 border-t border-[#172c21]/70">
+            <span className="hidden sm:inline-block text-[11px] font-mono text-emerald-400/60">
+              [SPACE or ENTER to advance]
+            </span>
+
+            <button
+              id="dialogue-next-btn"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAdvance();
+              }}
+              aria-label="Advance story to next line"
+              className="ml-auto min-h-[44px] min-w-[120px] px-4 py-2 rounded-lg bg-emerald-900/80 hover:bg-emerald-800 active:scale-95 border border-emerald-500/70 text-emerald-200 hover:text-white text-xs sm:text-sm font-bold tracking-wider font-mono flex items-center justify-center gap-1.5 cursor-pointer shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+            >
+              <span>NEXT</span>
+              <ChevronRight className="w-4 h-4 stroke-[2.5]" />
+            </button>
           </div>
         )}
       </div>
